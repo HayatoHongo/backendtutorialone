@@ -2,14 +2,14 @@ document.getElementById('inputForm').addEventListener('submit', async (e) => {
     e.preventDefault(); // フォーム送信をキャンセル
 
     const inputText = document.getElementById('inputText').value;
-    const resultText = document.getElementById('resultText');
+    const resultMessage = document.getElementById('resultMessage');
 
     if (!inputText.trim()) {
-        resultText.textContent = 'Please enter a query.';
+        resultMessage.textContent = 'Please enter a query.';
         return;
     }
 
-    resultText.textContent = 'Loading...';
+    resultMessage.textContent = 'Loading...';
 
     try {
         console.log('Sending POST request to /api/gemini with input:', inputText);
@@ -30,9 +30,16 @@ document.getElementById('inputForm').addEventListener('submit', async (e) => {
 
         const data = await response.json();
         console.log('Response from server:', data);
-        resultText.textContent = JSON.stringify(data, null, 2);
+
+        // JSONの中身を加工して表示
+        const candidates = data.candidates || [];
+        if (candidates.length > 0) {
+            resultMessage.textContent = candidates.map(candidate => candidate.content.parts.map(part => part.text).join('\n')).join('\n');
+        } else {
+            resultMessage.textContent = 'No response from Gemini API.';
+        }
     } catch (error) {
         console.error('Client-side error:', error);
-        resultText.textContent = `Error: ${error.message}`;
+        resultMessage.textContent = `Error: ${error.message}`;
     }
 });

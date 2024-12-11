@@ -55,3 +55,8 @@ button:hover {
 #resultText {
     white-space: pre-wrap;
 }
+
+#resultMessage {
+    white-space: pre-wrap; /* 改行を保持して表示 */
+    color: #333; /* 結果を見やすくするためのテキスト色 */
+}
