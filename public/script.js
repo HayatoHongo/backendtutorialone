@@ -1,45 +1,30 @@
-document.getElementById('inputForm').addEventListener('submit', async (e) => {
-    e.preventDefault(); // フォーム送信をキャンセル
+document.getElementById('api-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-    const inputText = document.getElementById('inputText').value;
-    const resultMessage = document.getElementById('resultMessage');
+    const userInput = document.getElementById('user-input').value;
+    const responseContainer = document.getElementById('response-content');
 
-    if (!inputText.trim()) {
-        resultMessage.textContent = 'Please enter a query.';
+    if (!userInput) {
+        responseContainer.textContent = 'Please provide input.';
         return;
     }
 
-    resultMessage.textContent = 'Loading...';
-
     try {
-        console.log('Sending POST request to /api/gemini with input:', inputText);
-
         const response = await fetch('/api/gemini', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ input: inputText }),
+            body: JSON.stringify({ input: userInput })
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Error response from server:', errorData);
-            throw new Error(errorData.error || 'API request failed');
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('Response from server:', data);
-
-        // JSONの中身を加工して表示
-        const candidates = data.candidates || [];
-        if (candidates.length > 0) {
-            resultMessage.textContent = candidates.map(candidate => candidate.content.parts.map(part => part.text).join('\n')).join('\n');
-        } else {
-            resultMessage.textContent = 'No response from Gemini API.';
-        }
+        responseContainer.textContent = JSON.stringify(data, null, 2);
     } catch (error) {
-        console.error('Client-side error:', error);
-        resultMessage.textContent = `Error: ${error.message}`;
+        responseContainer.textContent = `Error: ${error.message}`;
     }
 });

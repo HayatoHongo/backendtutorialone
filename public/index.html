@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini API Client</title>
     <link rel="stylesheet" href="style.css">
-    <title>Gemini API App</title>
 </head>
 <body>
-    <main>
-        <h1>Gemini API Interaction</h1>
-        <form id="inputForm" method="post">
-            <label for="inputText">Enter your query:</label>
-            <input type="text" id="inputText" name="inputText" required>
-            <button type="submit">Submit</button>
+    <div id="app">
+        <h1>Gemini API Client</h1>
+        <form id="api-form">
+            <label for="user-input">Input:</label>
+            <textarea id="user-input" placeholder="Enter your request here..."></textarea>
+            <button type="submit">Send</button>
         </form>
-        <div id="result">
-            <h2>Result:</h2>
-            <p id="resultMessage">No results yet.</p>
+        <div id="response">
+            <h2>Response:</h2>
+            <pre id="response-content"></pre>
         </div>
-    </main>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

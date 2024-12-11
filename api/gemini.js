@@ -1,55 +1,34 @@
+// 1. gemini.js (Server-side API)
 const axios = require('axios');
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-
-module.exports = async (req, res) => {
-    console.log('Incoming request method:', req.method);
-    console.log('Environment variable GEMINI_API_KEY:', GEMINI_API_KEY);
-
+module.exports = async function handler(req, res) {
     if (req.method !== 'POST') {
-        console.log('Invalid method received:', req.method);
-        return res.status(405).json({ error: 'Method not allowed', method: req.method });
+        console.log('Invalid method:', req.method);
+        return res.status(405).json({ error: 'Only POST requests are allowed' });
     }
 
     const { input } = req.body;
 
     if (!input) {
         console.log('Invalid request body:', req.body);
-        return res.status(400).json({ error: 'Missing input data', body: req.body });
+        return res.status(400).json({ error: 'Missing input in request body' });
     }
 
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
-    const payload = {
-        contents: [
-            {
-                parts: [
-                    {
-                        text: input
-                    }
-                ]
-            }
-        ]
-    };
 
     try {
-        console.log('Sending request to Gemini API:', { url: apiUrl, payload });
-
-        const response = await axios.post(apiUrl, payload, {
-            headers: {
-                'Content-Type': 'application/json',
-            }
+        const response = await axios.post(apiUrl, {
+            contents: [{
+                parts: [{ text: input }]
+            }]
         });
 
-        console.log('Response from Gemini API:', response.data);
         res.status(200).json(response.data);
     } catch (error) {
-        console.log('Error during Gemini API request:', {
-            message: error.message,
-            response: error.response?.data,
-        });
-        res.status(500).json({
-            error: 'Failed to fetch data from Gemini API',
-            details: error.response?.data || error.message,
-        });
+        console.error('Error calling Gemini API:', error.response?.data || error.message);
+        res.status(500).json({ error: 'Failed to fetch data from Gemini API' });
     }
 };
+
+// Save this file as "gemini.js" in the "api" directory
