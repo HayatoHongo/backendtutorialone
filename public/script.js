@@ -1,5 +1,5 @@
 document.getElementById('inputForm').addEventListener('submit', async (e) => {
-    e.preventDefault(); // デフォルトのフォーム送信を無効化
+    e.preventDefault(); // フォーム送信をキャンセル
 
     const inputText = document.getElementById('inputText').value;
     const resultText = document.getElementById('resultText');
@@ -12,20 +12,24 @@ document.getElementById('inputForm').addEventListener('submit', async (e) => {
     resultText.textContent = 'Loading...';
 
     try {
+        console.log('Sending POST request to /api/gemini with input:', inputText);
+
         const response = await fetch('/api/gemini', {
-            method: 'POST', // POST メソッドを指定
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ input: inputText }), // リクエストボディをJSON形式で送信
+            body: JSON.stringify({ input: inputText }),
         });
 
         if (!response.ok) {
             const errorData = await response.json();
+            console.error('Error response from server:', errorData);
             throw new Error(errorData.error || 'API request failed');
         }
 
         const data = await response.json();
+        console.log('Response from server:', data);
         resultText.textContent = JSON.stringify(data, null, 2);
     } catch (error) {
         console.error('Client-side error:', error);

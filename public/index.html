@@ -9,11 +9,12 @@
 <body>
     <main>
         <h1>Gemini API Interaction</h1>
-        <form id="inputForm">
+        <form id="inputForm" method="post">
             <label for="inputText">Enter your query:</label>
-            <textarea id="inputText" rows="4" placeholder="Type your query here..."></textarea>
+            <input type="text" id="inputText" name="inputText" required>
             <button type="submit">Submit</button>
         </form>
+        <div id="resultText"></div>        
         <div id="result">
             <h2>Result:</h2>
             <p id="resultText">No results yet.</p>

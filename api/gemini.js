@@ -3,13 +3,14 @@ const axios = require('axios');
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 module.exports = async (req, res) => {
-    // リクエストメソッド確認
+    console.log('Incoming request method:', req.method);
+    console.log('Environment variable GEMINI_API_KEY:', GEMINI_API_KEY);
+
     if (req.method !== 'POST') {
         console.log('Invalid method received:', req.method);
         return res.status(405).json({ error: 'Method not allowed', method: req.method });
     }
 
-    // リクエストボディの確認
     const { input } = req.body;
 
     if (!input) {
@@ -17,7 +18,6 @@ module.exports = async (req, res) => {
         return res.status(400).json({ error: 'Missing input data', body: req.body });
     }
 
-    // Gemini API呼び出し
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
     const payload = {
         contents: [
